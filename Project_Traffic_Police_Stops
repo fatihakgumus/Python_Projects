@@ -1,0 +1,3080 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "Untitled0.ipynb",
+      "provenance": [],
+      "collapsed_sections": [],
+      "authorship_tag": "ABX9TyPE5EausksGv9b32fto+a+B",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/fatihakgumus/python_projects/blob/master/Project1_TrafficPoliceStops\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "-b0rWw6o2uyN",
+        "outputId": "294c4e89-ad6f-4790-f7b4-69f508bab0a2"
+      },
+      "source": [
+        "from google.colab import drive\r\n",
+        "drive.mount('/content/drive')"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Mounted at /content/drive\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "sr3F77X4DpWl"
+      },
+      "source": [
+        "import pandas as pd\r\n",
+        "import numpy as np\r\n",
+        "import matplotlib.pyplot as plt\r\n",
+        "import seaborn as sns\r\n",
+        "\r\n",
+        "import warnings\r\n",
+        "warnings.filterwarnings(\"ignore\")\r\n",
+        "\r\n",
+        "from IPython.display import display\r\n",
+        "pd.options.display.float_format = '{:,.2f}'.format"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "2a0b4gBnD0Mv"
+      },
+      "source": [
+        "ri = pd.read_csv(\"/content/drive/MyDrive/Colab Notebooks/Project1_TrafficPoliceStops/RI_cleaned.csv\")"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 394
+        },
+        "id": "c3xcsabgFAgy",
+        "outputId": "ab20a738-5845-42b9-f0e9-0044f99a56b7"
+      },
+      "source": [
+        "ri.head()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>id</th>\n",
+              "      <th>state</th>\n",
+              "      <th>stop_date</th>\n",
+              "      <th>stop_time</th>\n",
+              "      <th>location_raw</th>\n",
+              "      <th>county_name</th>\n",
+              "      <th>county_fips</th>\n",
+              "      <th>fine_grained_location</th>\n",
+              "      <th>police_department</th>\n",
+              "      <th>driver_gender</th>\n",
+              "      <th>driver_age_raw</th>\n",
+              "      <th>driver_age</th>\n",
+              "      <th>driver_race_raw</th>\n",
+              "      <th>driver_race</th>\n",
+              "      <th>violation_raw</th>\n",
+              "      <th>violation</th>\n",
+              "      <th>search_conducted</th>\n",
+              "      <th>search_type_raw</th>\n",
+              "      <th>search_type</th>\n",
+              "      <th>contraband_found</th>\n",
+              "      <th>stop_outcome</th>\n",
+              "      <th>is_arrested</th>\n",
+              "      <th>stop_duration</th>\n",
+              "      <th>out_of_state</th>\n",
+              "      <th>drugs_related_stop</th>\n",
+              "      <th>district</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>RI-2005-00001</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>2005-01-02</td>\n",
+              "      <td>01:55</td>\n",
+              "      <td>Zone K1</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>600</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,985.00</td>\n",
+              "      <td>20.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone K1</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>RI-2005-00002</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>2005-01-02</td>\n",
+              "      <td>20:30</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,987.00</td>\n",
+              "      <td>18.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>16-30 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>RI-2005-00003</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>2005-01-04</td>\n",
+              "      <td>11:30</td>\n",
+              "      <td>Zone X1</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>0</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X1</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>RI-2005-00004</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>2005-01-04</td>\n",
+              "      <td>12:55</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,986.00</td>\n",
+              "      <td>19.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Equipment/Inspection Violation</td>\n",
+              "      <td>Equipment</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>RI-2005-00005</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>2005-01-06</td>\n",
+              "      <td>01:30</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,978.00</td>\n",
+              "      <td>27.00</td>\n",
+              "      <td>B</td>\n",
+              "      <td>Black</td>\n",
+              "      <td>Equipment/Inspection Violation</td>\n",
+              "      <td>Equipment</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "              id state   stop_date  ... out_of_state drugs_related_stop  district\n",
+              "0  RI-2005-00001    RI  2005-01-02  ...        False              False   Zone K1\n",
+              "1  RI-2005-00002    RI  2005-01-02  ...        False              False   Zone X4\n",
+              "2  RI-2005-00003    RI  2005-01-04  ...          NaN              False   Zone X1\n",
+              "3  RI-2005-00004    RI  2005-01-04  ...        False              False   Zone X4\n",
+              "4  RI-2005-00005    RI  2005-01-06  ...        False              False   Zone X4\n",
+              "\n",
+              "[5 rows x 26 columns]"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 4
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "F6B_0eCPFjP0",
+        "outputId": "b201b9fa-afef-4e82-e0cd-6a0ac67f4825"
+      },
+      "source": [
+        "ri.isnull().sum()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "id                            0\n",
+              "state                         0\n",
+              "stop_date                    10\n",
+              "stop_time                    10\n",
+              "location_raw                  0\n",
+              "county_name              509681\n",
+              "county_fips              509681\n",
+              "fine_grained_location    509681\n",
+              "police_department            10\n",
+              "driver_gender             29097\n",
+              "driver_age_raw            29049\n",
+              "driver_age                30695\n",
+              "driver_race_raw           29073\n",
+              "driver_race               29073\n",
+              "violation_raw             29073\n",
+              "violation                 29073\n",
+              "search_conducted             10\n",
+              "search_type_raw          491919\n",
+              "search_type              491919\n",
+              "contraband_found              0\n",
+              "stop_outcome              29073\n",
+              "is_arrested               29073\n",
+              "stop_duration             29073\n",
+              "out_of_state              29881\n",
+              "drugs_related_stop            0\n",
+              "district                      0\n",
+              "dtype: int64"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 5
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 297
+        },
+        "id": "dNMO9o8FFjM0",
+        "outputId": "7f6e221e-8e0a-4530-dbaa-20b735f830bb"
+      },
+      "source": [
+        "ri.describe()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>county_name</th>\n",
+              "      <th>county_fips</th>\n",
+              "      <th>fine_grained_location</th>\n",
+              "      <th>driver_age_raw</th>\n",
+              "      <th>driver_age</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>count</th>\n",
+              "      <td>0.00</td>\n",
+              "      <td>0.00</td>\n",
+              "      <td>0.00</td>\n",
+              "      <td>480,632.00</td>\n",
+              "      <td>478,986.00</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>mean</th>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>1,970.51</td>\n",
+              "      <td>33.98</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>std</th>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>108.19</td>\n",
+              "      <td>12.70</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>min</th>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>0.00</td>\n",
+              "      <td>15.00</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>25%</th>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>1,967.00</td>\n",
+              "      <td>23.00</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>50%</th>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>1,980.00</td>\n",
+              "      <td>31.00</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>75%</th>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>1,987.00</td>\n",
+              "      <td>43.00</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>max</th>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>8,801.00</td>\n",
+              "      <td>99.00</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "       county_name  county_fips  ...  driver_age_raw  driver_age\n",
+              "count         0.00         0.00  ...      480,632.00  478,986.00\n",
+              "mean           nan          nan  ...        1,970.51       33.98\n",
+              "std            nan          nan  ...          108.19       12.70\n",
+              "min            nan          nan  ...            0.00       15.00\n",
+              "25%            nan          nan  ...        1,967.00       23.00\n",
+              "50%            nan          nan  ...        1,980.00       31.00\n",
+              "75%            nan          nan  ...        1,987.00       43.00\n",
+              "max            nan          nan  ...        8,801.00       99.00\n",
+              "\n",
+              "[8 rows x 5 columns]"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 6
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "-ZvNSWdDFjFw",
+        "outputId": "501b26e5-567a-4d9d-fc6f-b49b590fc573"
+      },
+      "source": [
+        "ri.info()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "<class 'pandas.core.frame.DataFrame'>\n",
+            "RangeIndex: 509681 entries, 0 to 509680\n",
+            "Data columns (total 26 columns):\n",
+            " #   Column                 Non-Null Count   Dtype  \n",
+            "---  ------                 --------------   -----  \n",
+            " 0   id                     509681 non-null  object \n",
+            " 1   state                  509681 non-null  object \n",
+            " 2   stop_date              509671 non-null  object \n",
+            " 3   stop_time              509671 non-null  object \n",
+            " 4   location_raw           509681 non-null  object \n",
+            " 5   county_name            0 non-null       float64\n",
+            " 6   county_fips            0 non-null       float64\n",
+            " 7   fine_grained_location  0 non-null       float64\n",
+            " 8   police_department      509671 non-null  object \n",
+            " 9   driver_gender          480584 non-null  object \n",
+            " 10  driver_age_raw         480632 non-null  float64\n",
+            " 11  driver_age             478986 non-null  float64\n",
+            " 12  driver_race_raw        480608 non-null  object \n",
+            " 13  driver_race            480608 non-null  object \n",
+            " 14  violation_raw          480608 non-null  object \n",
+            " 15  violation              480608 non-null  object \n",
+            " 16  search_conducted       509671 non-null  object \n",
+            " 17  search_type_raw        17762 non-null   object \n",
+            " 18  search_type            17762 non-null   object \n",
+            " 19  contraband_found       509681 non-null  bool   \n",
+            " 20  stop_outcome           480608 non-null  object \n",
+            " 21  is_arrested            480608 non-null  object \n",
+            " 22  stop_duration          480608 non-null  object \n",
+            " 23  out_of_state           479800 non-null  object \n",
+            " 24  drugs_related_stop     509681 non-null  bool   \n",
+            " 25  district               509681 non-null  object \n",
+            "dtypes: bool(2), float64(5), object(19)\n",
+            "memory usage: 94.3+ MB\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "sCGP6s_0FjCr",
+        "outputId": "8696e229-f68d-4cb4-f1be-c63bdb51528b"
+      },
+      "source": [
+        "ri.columns"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "Index(['id', 'state', 'stop_date', 'stop_time', 'location_raw', 'county_name',\n",
+              "       'county_fips', 'fine_grained_location', 'police_department',\n",
+              "       'driver_gender', 'driver_age_raw', 'driver_age', 'driver_race_raw',\n",
+              "       'driver_race', 'violation_raw', 'violation', 'search_conducted',\n",
+              "       'search_type_raw', 'search_type', 'contraband_found', 'stop_outcome',\n",
+              "       'is_arrested', 'stop_duration', 'out_of_state', 'drugs_related_stop',\n",
+              "       'district'],\n",
+              "      dtype='object')"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 8
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "VpJffHyYOTbD"
+      },
+      "source": [
+        "combined = ri.stop_date.str.cat(ri.stop_time, sep = \" \")"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "pqiVIuqIPAZc",
+        "outputId": "f64943be-728f-49bd-e3ea-166d99405a72"
+      },
+      "source": [
+        "type(ri.stop_date)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "pandas.core.series.Series"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 10
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "lJE12yn0PN8v"
+      },
+      "source": [
+        "comb = ri.stop_date + \" \" + ri.stop_time"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "yoKM9Lv8Pbjg",
+        "outputId": "5dd03f54-6892-4071-f28c-7759348270c8"
+      },
+      "source": [
+        "comb.head()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0    2005-01-02 01:55\n",
+              "1    2005-01-02 20:30\n",
+              "2    2005-01-04 11:30\n",
+              "3    2005-01-04 12:55\n",
+              "4    2005-01-06 01:30\n",
+              "dtype: object"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 12
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "x-cuR1OJQPt3",
+        "outputId": "9e695cdd-0ef1-460a-b5d9-c6258b2f437f"
+      },
+      "source": [
+        "combined.head()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0    2005-01-02 01:55\n",
+              "1    2005-01-02 20:30\n",
+              "2    2005-01-04 11:30\n",
+              "3    2005-01-04 12:55\n",
+              "4    2005-01-06 01:30\n",
+              "Name: stop_date, dtype: object"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 13
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "PZC7Sx9oFi_R"
+      },
+      "source": [
+        "ri[\"stop_datetime\"] = pd.to_datetime(combined)"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "wIkITNQJPl9o"
+      },
+      "source": [
+        "ri.drop([\"stop_date\", \"stop_time\"], axis = 1, inplace = True)"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 394
+        },
+        "id": "FXX_G2JGPre0",
+        "outputId": "bf3edb46-8d73-4028-d0d5-1325114357c9"
+      },
+      "source": [
+        "ri.head()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>id</th>\n",
+              "      <th>state</th>\n",
+              "      <th>location_raw</th>\n",
+              "      <th>county_name</th>\n",
+              "      <th>county_fips</th>\n",
+              "      <th>fine_grained_location</th>\n",
+              "      <th>police_department</th>\n",
+              "      <th>driver_gender</th>\n",
+              "      <th>driver_age_raw</th>\n",
+              "      <th>driver_age</th>\n",
+              "      <th>driver_race_raw</th>\n",
+              "      <th>driver_race</th>\n",
+              "      <th>violation_raw</th>\n",
+              "      <th>violation</th>\n",
+              "      <th>search_conducted</th>\n",
+              "      <th>search_type_raw</th>\n",
+              "      <th>search_type</th>\n",
+              "      <th>contraband_found</th>\n",
+              "      <th>stop_outcome</th>\n",
+              "      <th>is_arrested</th>\n",
+              "      <th>stop_duration</th>\n",
+              "      <th>out_of_state</th>\n",
+              "      <th>drugs_related_stop</th>\n",
+              "      <th>district</th>\n",
+              "      <th>stop_datetime</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>RI-2005-00001</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone K1</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>600</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,985.00</td>\n",
+              "      <td>20.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone K1</td>\n",
+              "      <td>2005-01-02 01:55:00</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>RI-2005-00002</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,987.00</td>\n",
+              "      <td>18.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>16-30 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>2005-01-02 20:30:00</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>RI-2005-00003</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X1</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>0</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X1</td>\n",
+              "      <td>2005-01-04 11:30:00</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>RI-2005-00004</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,986.00</td>\n",
+              "      <td>19.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Equipment/Inspection Violation</td>\n",
+              "      <td>Equipment</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>2005-01-04 12:55:00</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>RI-2005-00005</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,978.00</td>\n",
+              "      <td>27.00</td>\n",
+              "      <td>B</td>\n",
+              "      <td>Black</td>\n",
+              "      <td>Equipment/Inspection Violation</td>\n",
+              "      <td>Equipment</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>2005-01-06 01:30:00</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "              id state  ... district       stop_datetime\n",
+              "0  RI-2005-00001    RI  ...  Zone K1 2005-01-02 01:55:00\n",
+              "1  RI-2005-00002    RI  ...  Zone X4 2005-01-02 20:30:00\n",
+              "2  RI-2005-00003    RI  ...  Zone X1 2005-01-04 11:30:00\n",
+              "3  RI-2005-00004    RI  ...  Zone X4 2005-01-04 12:55:00\n",
+              "4  RI-2005-00005    RI  ...  Zone X4 2005-01-06 01:30:00\n",
+              "\n",
+              "[5 rows x 25 columns]"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 16
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "mkHaiBu6Py4U",
+        "outputId": "592a24f8-a7e8-416f-8b6a-67a42904888c"
+      },
+      "source": [
+        "ri.dtypes"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "id                               object\n",
+              "state                            object\n",
+              "location_raw                     object\n",
+              "county_name                     float64\n",
+              "county_fips                     float64\n",
+              "fine_grained_location           float64\n",
+              "police_department                object\n",
+              "driver_gender                    object\n",
+              "driver_age_raw                  float64\n",
+              "driver_age                      float64\n",
+              "driver_race_raw                  object\n",
+              "driver_race                      object\n",
+              "violation_raw                    object\n",
+              "violation                        object\n",
+              "search_conducted                 object\n",
+              "search_type_raw                  object\n",
+              "search_type                      object\n",
+              "contraband_found                   bool\n",
+              "stop_outcome                     object\n",
+              "is_arrested                      object\n",
+              "stop_duration                    object\n",
+              "out_of_state                     object\n",
+              "drugs_related_stop                 bool\n",
+              "district                         object\n",
+              "stop_datetime            datetime64[ns]\n",
+              "dtype: object"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 17
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "TB-c0-8TFia2"
+      },
+      "source": [
+        "ri.set_index(\"stop_datetime\", inplace = True)"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 425
+        },
+        "id": "RLP1byIgRYzX",
+        "outputId": "ec1716da-b240-4941-fa12-84205012d96f"
+      },
+      "source": [
+        "ri.head()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>id</th>\n",
+              "      <th>state</th>\n",
+              "      <th>location_raw</th>\n",
+              "      <th>county_name</th>\n",
+              "      <th>county_fips</th>\n",
+              "      <th>fine_grained_location</th>\n",
+              "      <th>police_department</th>\n",
+              "      <th>driver_gender</th>\n",
+              "      <th>driver_age_raw</th>\n",
+              "      <th>driver_age</th>\n",
+              "      <th>driver_race_raw</th>\n",
+              "      <th>driver_race</th>\n",
+              "      <th>violation_raw</th>\n",
+              "      <th>violation</th>\n",
+              "      <th>search_conducted</th>\n",
+              "      <th>search_type_raw</th>\n",
+              "      <th>search_type</th>\n",
+              "      <th>contraband_found</th>\n",
+              "      <th>stop_outcome</th>\n",
+              "      <th>is_arrested</th>\n",
+              "      <th>stop_duration</th>\n",
+              "      <th>out_of_state</th>\n",
+              "      <th>drugs_related_stop</th>\n",
+              "      <th>district</th>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>stop_datetime</th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>2005-01-02 01:55:00</th>\n",
+              "      <td>RI-2005-00001</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone K1</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>600</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,985.00</td>\n",
+              "      <td>20.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone K1</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-01-02 20:30:00</th>\n",
+              "      <td>RI-2005-00002</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,987.00</td>\n",
+              "      <td>18.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>16-30 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-01-04 11:30:00</th>\n",
+              "      <td>RI-2005-00003</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X1</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>0</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X1</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-01-04 12:55:00</th>\n",
+              "      <td>RI-2005-00004</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,986.00</td>\n",
+              "      <td>19.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Equipment/Inspection Violation</td>\n",
+              "      <td>Equipment</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-01-06 01:30:00</th>\n",
+              "      <td>RI-2005-00005</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,978.00</td>\n",
+              "      <td>27.00</td>\n",
+              "      <td>B</td>\n",
+              "      <td>Black</td>\n",
+              "      <td>Equipment/Inspection Violation</td>\n",
+              "      <td>Equipment</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "                                id state  ... drugs_related_stop  district\n",
+              "stop_datetime                             ...                             \n",
+              "2005-01-02 01:55:00  RI-2005-00001    RI  ...              False   Zone K1\n",
+              "2005-01-02 20:30:00  RI-2005-00002    RI  ...              False   Zone X4\n",
+              "2005-01-04 11:30:00  RI-2005-00003    RI  ...              False   Zone X1\n",
+              "2005-01-04 12:55:00  RI-2005-00004    RI  ...              False   Zone X4\n",
+              "2005-01-06 01:30:00  RI-2005-00005    RI  ...              False   Zone X4\n",
+              "\n",
+              "[5 rows x 24 columns]"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 19
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "b6Nvdq7wl6V1",
+        "outputId": "2f04a549-97fe-494a-fc90-dd4e38e1875c"
+      },
+      "source": [
+        "ri.violation.value_counts(dropna = False)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "Speeding               268744\n",
+              "Moving violation        90234\n",
+              "Equipment               61252\n",
+              "NaN                     29073\n",
+              "Other                   24221\n",
+              "Registration/plates     19830\n",
+              "Seat belt               16327\n",
+              "Name: violation, dtype: int64"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 20
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "IrqhwTGNl9k2",
+        "outputId": "df428de3-bb18-466f-c569-1f44700b2c95"
+      },
+      "source": [
+        "ri.violation.value_counts(normalize = True)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "Speeding              0.56\n",
+              "Moving violation      0.19\n",
+              "Equipment             0.13\n",
+              "Other                 0.05\n",
+              "Registration/plates   0.04\n",
+              "Seat belt             0.03\n",
+              "Name: violation, dtype: float64"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 21
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "iTYUHsYbSjAO",
+        "outputId": "4e49a83b-b46a-46b4-948d-71048edbfa1a"
+      },
+      "source": [
+        "ri[\"driver_gender\"].value_counts(dropna = False)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "M      349446\n",
+              "F      131138\n",
+              "NaN     29097\n",
+              "Name: driver_gender, dtype: int64"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 22
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "0MPLXQHKSjFv"
+      },
+      "source": [
+        "female = ri[ri.driver_gender == \"F\"]\r\n",
+        "\r\n",
+        "male = ri[ri.driver_gender == \"M\"]"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 425
+        },
+        "id": "sv6Jn2OXNR37",
+        "outputId": "35fbd361-b6f7-48a0-e033-f21741405469"
+      },
+      "source": [
+        "female.head()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>id</th>\n",
+              "      <th>state</th>\n",
+              "      <th>location_raw</th>\n",
+              "      <th>county_name</th>\n",
+              "      <th>county_fips</th>\n",
+              "      <th>fine_grained_location</th>\n",
+              "      <th>police_department</th>\n",
+              "      <th>driver_gender</th>\n",
+              "      <th>driver_age_raw</th>\n",
+              "      <th>driver_age</th>\n",
+              "      <th>driver_race_raw</th>\n",
+              "      <th>driver_race</th>\n",
+              "      <th>violation_raw</th>\n",
+              "      <th>violation</th>\n",
+              "      <th>search_conducted</th>\n",
+              "      <th>search_type_raw</th>\n",
+              "      <th>search_type</th>\n",
+              "      <th>contraband_found</th>\n",
+              "      <th>stop_outcome</th>\n",
+              "      <th>is_arrested</th>\n",
+              "      <th>stop_duration</th>\n",
+              "      <th>out_of_state</th>\n",
+              "      <th>drugs_related_stop</th>\n",
+              "      <th>district</th>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>stop_datetime</th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>2005-02-24 01:20:00</th>\n",
+              "      <td>RI-2005-00016</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X3</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>200</td>\n",
+              "      <td>F</td>\n",
+              "      <td>1,983.00</td>\n",
+              "      <td>22.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>True</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X3</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-03-14 10:00:00</th>\n",
+              "      <td>RI-2005-00019</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone K3</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>300</td>\n",
+              "      <td>F</td>\n",
+              "      <td>1,984.00</td>\n",
+              "      <td>21.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone K3</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-03-29 23:20:00</th>\n",
+              "      <td>RI-2005-00026</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone K3</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>300</td>\n",
+              "      <td>F</td>\n",
+              "      <td>1,971.00</td>\n",
+              "      <td>34.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>True</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone K3</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-06-06 13:20:00</th>\n",
+              "      <td>RI-2005-00035</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>F</td>\n",
+              "      <td>1,986.00</td>\n",
+              "      <td>19.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-06-18 16:30:00</th>\n",
+              "      <td>RI-2005-00037</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>F</td>\n",
+              "      <td>1,964.00</td>\n",
+              "      <td>41.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Other Traffic Violation</td>\n",
+              "      <td>Moving violation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Arrest Driver</td>\n",
+              "      <td>True</td>\n",
+              "      <td>30+ Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "                                id state  ... drugs_related_stop  district\n",
+              "stop_datetime                             ...                             \n",
+              "2005-02-24 01:20:00  RI-2005-00016    RI  ...              False   Zone X3\n",
+              "2005-03-14 10:00:00  RI-2005-00019    RI  ...              False   Zone K3\n",
+              "2005-03-29 23:20:00  RI-2005-00026    RI  ...              False   Zone K3\n",
+              "2005-06-06 13:20:00  RI-2005-00035    RI  ...              False   Zone X4\n",
+              "2005-06-18 16:30:00  RI-2005-00037    RI  ...              False   Zone X4\n",
+              "\n",
+              "[5 rows x 24 columns]"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 24
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 425
+        },
+        "id": "fjyS8kKuNUFG",
+        "outputId": "8ea673e7-00bb-455c-b25f-da331fe08feb"
+      },
+      "source": [
+        "male.head()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>id</th>\n",
+              "      <th>state</th>\n",
+              "      <th>location_raw</th>\n",
+              "      <th>county_name</th>\n",
+              "      <th>county_fips</th>\n",
+              "      <th>fine_grained_location</th>\n",
+              "      <th>police_department</th>\n",
+              "      <th>driver_gender</th>\n",
+              "      <th>driver_age_raw</th>\n",
+              "      <th>driver_age</th>\n",
+              "      <th>driver_race_raw</th>\n",
+              "      <th>driver_race</th>\n",
+              "      <th>violation_raw</th>\n",
+              "      <th>violation</th>\n",
+              "      <th>search_conducted</th>\n",
+              "      <th>search_type_raw</th>\n",
+              "      <th>search_type</th>\n",
+              "      <th>contraband_found</th>\n",
+              "      <th>stop_outcome</th>\n",
+              "      <th>is_arrested</th>\n",
+              "      <th>stop_duration</th>\n",
+              "      <th>out_of_state</th>\n",
+              "      <th>drugs_related_stop</th>\n",
+              "      <th>district</th>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>stop_datetime</th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>2005-01-02 01:55:00</th>\n",
+              "      <td>RI-2005-00001</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone K1</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>600</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,985.00</td>\n",
+              "      <td>20.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone K1</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-01-02 20:30:00</th>\n",
+              "      <td>RI-2005-00002</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,987.00</td>\n",
+              "      <td>18.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>16-30 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-01-04 12:55:00</th>\n",
+              "      <td>RI-2005-00004</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,986.00</td>\n",
+              "      <td>19.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Equipment/Inspection Violation</td>\n",
+              "      <td>Equipment</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-01-06 01:30:00</th>\n",
+              "      <td>RI-2005-00005</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,978.00</td>\n",
+              "      <td>27.00</td>\n",
+              "      <td>B</td>\n",
+              "      <td>Black</td>\n",
+              "      <td>Equipment/Inspection Violation</td>\n",
+              "      <td>Equipment</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-01-12 08:05:00</th>\n",
+              "      <td>RI-2005-00006</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X1</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>0</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,973.00</td>\n",
+              "      <td>32.00</td>\n",
+              "      <td>B</td>\n",
+              "      <td>Black</td>\n",
+              "      <td>Call for Service</td>\n",
+              "      <td>Other</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>30+ Min</td>\n",
+              "      <td>True</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X1</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "                                id state  ... drugs_related_stop  district\n",
+              "stop_datetime                             ...                             \n",
+              "2005-01-02 01:55:00  RI-2005-00001    RI  ...              False   Zone K1\n",
+              "2005-01-02 20:30:00  RI-2005-00002    RI  ...              False   Zone X4\n",
+              "2005-01-04 12:55:00  RI-2005-00004    RI  ...              False   Zone X4\n",
+              "2005-01-06 01:30:00  RI-2005-00005    RI  ...              False   Zone X4\n",
+              "2005-01-12 08:05:00  RI-2005-00006    RI  ...              False   Zone X1\n",
+              "\n",
+              "[5 rows x 24 columns]"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 25
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "PrMIU52sNW68",
+        "outputId": "dc820544-b7ed-49c4-f782-dfaa6b4d6eb0"
+      },
+      "source": [
+        "female.violation.value_counts(normalize = True)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "Speeding              0.66\n",
+              "Moving violation      0.14\n",
+              "Equipment             0.11\n",
+              "Registration/plates   0.04\n",
+              "Other                 0.03\n",
+              "Seat belt             0.03\n",
+              "Name: violation, dtype: float64"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 26
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "E7fNKToCNdhp",
+        "outputId": "e16c9094-e7fa-4fff-901a-2859dd26b0a2"
+      },
+      "source": [
+        "male.violation.value_counts(normalize = True)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "Speeding              0.52\n",
+              "Moving violation      0.21\n",
+              "Equipment             0.14\n",
+              "Other                 0.06\n",
+              "Registration/plates   0.04\n",
+              "Seat belt             0.04\n",
+              "Name: violation, dtype: float64"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 27
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "4_yOqyvYNff9",
+        "outputId": "572060b4-2644-45cd-f94e-77e0d26de6ad"
+      },
+      "source": [
+        "ri.groupby([\"driver_gender\"])[\"violation\"].value_counts(normalize = True, dropna = False)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "driver_gender  violation          \n",
+              "F              Speeding              0.66\n",
+              "               Moving violation      0.14\n",
+              "               Equipment             0.11\n",
+              "               Registration/plates   0.04\n",
+              "               Other                 0.03\n",
+              "               Seat belt             0.03\n",
+              "M              Speeding              0.52\n",
+              "               Moving violation      0.21\n",
+              "               Equipment             0.14\n",
+              "               Other                 0.06\n",
+              "               Registration/plates   0.04\n",
+              "               Seat belt             0.04\n",
+              "Name: violation, dtype: float64"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 28
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "vJdYN_eyNrIB"
+      },
+      "source": [
+        "female_and_speeding = ri[(ri.driver_gender == \"F\") & (ri.violation == \"Speeding\")]\r\n",
+        "\r\n",
+        "male_and_speeding = ri[(ri.driver_gender == \"M\") & (ri.violation == \"Speeding\")]"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 425
+        },
+        "id": "RfxZI00jNw0G",
+        "outputId": "11679c94-293b-4756-a1e3-79324fa2a75b"
+      },
+      "source": [
+        "female_and_speeding.head()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>id</th>\n",
+              "      <th>state</th>\n",
+              "      <th>location_raw</th>\n",
+              "      <th>county_name</th>\n",
+              "      <th>county_fips</th>\n",
+              "      <th>fine_grained_location</th>\n",
+              "      <th>police_department</th>\n",
+              "      <th>driver_gender</th>\n",
+              "      <th>driver_age_raw</th>\n",
+              "      <th>driver_age</th>\n",
+              "      <th>driver_race_raw</th>\n",
+              "      <th>driver_race</th>\n",
+              "      <th>violation_raw</th>\n",
+              "      <th>violation</th>\n",
+              "      <th>search_conducted</th>\n",
+              "      <th>search_type_raw</th>\n",
+              "      <th>search_type</th>\n",
+              "      <th>contraband_found</th>\n",
+              "      <th>stop_outcome</th>\n",
+              "      <th>is_arrested</th>\n",
+              "      <th>stop_duration</th>\n",
+              "      <th>out_of_state</th>\n",
+              "      <th>drugs_related_stop</th>\n",
+              "      <th>district</th>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>stop_datetime</th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>2005-02-24 01:20:00</th>\n",
+              "      <td>RI-2005-00016</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X3</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>200</td>\n",
+              "      <td>F</td>\n",
+              "      <td>1,983.00</td>\n",
+              "      <td>22.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>True</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X3</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-03-14 10:00:00</th>\n",
+              "      <td>RI-2005-00019</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone K3</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>300</td>\n",
+              "      <td>F</td>\n",
+              "      <td>1,984.00</td>\n",
+              "      <td>21.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone K3</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-03-29 23:20:00</th>\n",
+              "      <td>RI-2005-00026</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone K3</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>300</td>\n",
+              "      <td>F</td>\n",
+              "      <td>1,971.00</td>\n",
+              "      <td>34.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>True</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone K3</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-06-06 13:20:00</th>\n",
+              "      <td>RI-2005-00035</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>F</td>\n",
+              "      <td>1,986.00</td>\n",
+              "      <td>19.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-07-06 11:22:00</th>\n",
+              "      <td>RI-2005-00038</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X1</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>0</td>\n",
+              "      <td>F</td>\n",
+              "      <td>1,973.00</td>\n",
+              "      <td>32.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>False</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X1</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "                                id state  ... drugs_related_stop  district\n",
+              "stop_datetime                             ...                             \n",
+              "2005-02-24 01:20:00  RI-2005-00016    RI  ...              False   Zone X3\n",
+              "2005-03-14 10:00:00  RI-2005-00019    RI  ...              False   Zone K3\n",
+              "2005-03-29 23:20:00  RI-2005-00026    RI  ...              False   Zone K3\n",
+              "2005-06-06 13:20:00  RI-2005-00035    RI  ...              False   Zone X4\n",
+              "2005-07-06 11:22:00  RI-2005-00038    RI  ...              False   Zone X1\n",
+              "\n",
+              "[5 rows x 24 columns]"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 30
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "sKICGWQRN0sZ",
+        "outputId": "a9b9fde1-5e0f-401f-db01-4c065e1044ce"
+      },
+      "source": [
+        "ri.stop_outcome.value_counts(dropna = False)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "Citation            428388\n",
+              "NaN                  29073\n",
+              "Warning              28849\n",
+              "Arrest Driver        14630\n",
+              "N/D                   3431\n",
+              "No Action             3337\n",
+              "Arrest Passenger      1973\n",
+              "Name: stop_outcome, dtype: int64"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 31
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "iL5Gu1z7N7vY",
+        "outputId": "214d5eda-7fa4-49cd-9881-26fcd9f455cb"
+      },
+      "source": [
+        "print(female_and_speeding.stop_outcome.value_counts(normalize = True))\r\n",
+        "print(\"--------------------\")\r\n",
+        "print(male_and_speeding.stop_outcome.value_counts(normalize = True))"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Citation           0.95\n",
+            "Warning            0.04\n",
+            "Arrest Driver      0.01\n",
+            "Arrest Passenger   0.00\n",
+            "N/D                0.00\n",
+            "No Action          0.00\n",
+            "Name: stop_outcome, dtype: float64\n",
+            "--------------------\n",
+            "Citation           0.94\n",
+            "Warning            0.04\n",
+            "Arrest Driver      0.02\n",
+            "Arrest Passenger   0.00\n",
+            "N/D                0.00\n",
+            "No Action          0.00\n",
+            "Name: stop_outcome, dtype: float64\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "xU22lgcZTJgP",
+        "outputId": "f67bbe15-9f77-43dc-c008-a62cb28d5716"
+      },
+      "source": [
+        "ri.groupby([\"violation\", \"driver_gender\"])[\"stop_outcome\"].value_counts(normalize = True)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "violation  driver_gender  stop_outcome    \n",
+              "Equipment  F              Citation           0.73\n",
+              "                          Warning            0.16\n",
+              "                          N/D                0.05\n",
+              "                          Arrest Driver      0.04\n",
+              "                          Arrest Passenger   0.02\n",
+              "                                             ... \n",
+              "Speeding   M              Warning            0.04\n",
+              "                          Arrest Driver      0.02\n",
+              "                          Arrest Passenger   0.00\n",
+              "                          N/D                0.00\n",
+              "                          No Action          0.00\n",
+              "Name: stop_outcome, Length: 71, dtype: float64"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 33
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "DEATSnLeOLPN",
+        "outputId": "7ef15daf-2d73-457b-d84f-1e77dde33f49"
+      },
+      "source": [
+        "print(ri.search_conducted.dtype)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "object\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ymJCmYV-OLT1",
+        "outputId": "2c256a68-83dc-4beb-a1c3-887157b2d97f"
+      },
+      "source": [
+        "ri.search_conducted.value_counts(normalize = True)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "False   0.97\n",
+              "True    0.03\n",
+              "Name: search_conducted, dtype: float64"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 35
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "-6tJy4_6OLX7",
+        "outputId": "9bb41df7-6882-4860-b04b-f5aba8a9b9ec"
+      },
+      "source": [
+        "ri.search_conducted.value_counts(normalize = True)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "False   0.97\n",
+              "True    0.03\n",
+              "Name: search_conducted, dtype: float64"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 36
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "z4gCVhbjOLcL",
+        "outputId": "123577ca-b5c3-4aa4-b80f-770d92388a90"
+      },
+      "source": [
+        "ri[ri.driver_gender == \"F\"].search_conducted.mean()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.018751239152648355"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 37
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "fLSfoV0YRI9g",
+        "outputId": "10ea586c-46bc-4d87-c4be-21ed10f652f2"
+      },
+      "source": [
+        "ri[ri.driver_gender == \"M\"].search_conducted.mean()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.04379217389811301"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 38
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "NtAWGUHL6atS"
+      },
+      "source": [
+        "# ri.groupby(\"driver_gender\")[\"search_conducted\"].mean()"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "j5ABQ-ngRPUw"
+      },
+      "source": [
+        "# ri.groupby([\"driver_gender\", \"violation\"]).search_conducted.mean()"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "e5G4JmGlRPZ2"
+      },
+      "source": [
+        "# ri.groupby([\"violation\", \"driver_gender\"]).search_conducted.mean()"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "o_8ydfeyRWnO",
+        "outputId": "6fce02cb-124f-4081-c9ee-9b4414336e2b"
+      },
+      "source": [
+        "ri.search_type.value_counts()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "Incident to Arrest                                          6998\n",
+              "Probable Cause                                              4989\n",
+              "Reasonable Suspicion                                        1141\n",
+              "Inventory                                                   1101\n",
+              "Protective Frisk                                             879\n",
+              "Incident to Arrest,Inventory                                 649\n",
+              "Incident to Arrest,Probable Cause                            552\n",
+              "Probable Cause,Reasonable Suspicion                          334\n",
+              "Probable Cause,Protective Frisk                              221\n",
+              "Incident to Arrest,Protective Frisk                          158\n",
+              "Incident to Arrest,Inventory,Probable Cause                  151\n",
+              "Inventory,Probable Cause                                     132\n",
+              "Protective Frisk,Reasonable Suspicion                         83\n",
+              "Incident to Arrest,Inventory,Protective Frisk                 77\n",
+              "Incident to Arrest,Probable Cause,Protective Frisk            74\n",
+              "Inventory,Protective Frisk                                    52\n",
+              "Incident to Arrest,Reasonable Suspicion                       49\n",
+              "Probable Cause,Protective Frisk,Reasonable Suspicion          31\n",
+              "Incident to Arrest,Probable Cause,Reasonable Suspicion        31\n",
+              "Inventory,Reasonable Suspicion                                17\n",
+              "Inventory,Probable Cause,Protective Frisk                     14\n",
+              "Incident to Arrest,Inventory,Reasonable Suspicion             12\n",
+              "Incident to Arrest,Protective Frisk,Reasonable Suspicion       8\n",
+              "Inventory,Probable Cause,Reasonable Suspicion                  8\n",
+              "Inventory,Protective Frisk,Reasonable Suspicion                1\n",
+              "Name: search_type, dtype: int64"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 42
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "gOrcCcCmRWre"
+      },
+      "source": [
+        "ri[\"frisk\"] = ri.search_type.str.contains(\"Protective Frisk\", na = False)"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "GsXXyfKiRWxA",
+        "outputId": "1da09bfc-d0eb-4639-f9e0-b7a6c0b1cf23"
+      },
+      "source": [
+        "print(ri.frisk.dtype)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "bool\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "gJoKdHzfRW1L",
+        "outputId": "eed01808-5414-47f7-eaa5-fb195b8691a4"
+      },
+      "source": [
+        "ri.frisk.sum()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "1598"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 45
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 425
+        },
+        "id": "kc5sAUmORW6X",
+        "outputId": "45e50e2d-d1a2-4ca9-a4d4-55439be66b61"
+      },
+      "source": [
+        "ri[ri.frisk].head()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>id</th>\n",
+              "      <th>state</th>\n",
+              "      <th>location_raw</th>\n",
+              "      <th>county_name</th>\n",
+              "      <th>county_fips</th>\n",
+              "      <th>fine_grained_location</th>\n",
+              "      <th>police_department</th>\n",
+              "      <th>driver_gender</th>\n",
+              "      <th>driver_age_raw</th>\n",
+              "      <th>driver_age</th>\n",
+              "      <th>driver_race_raw</th>\n",
+              "      <th>driver_race</th>\n",
+              "      <th>violation_raw</th>\n",
+              "      <th>violation</th>\n",
+              "      <th>search_conducted</th>\n",
+              "      <th>search_type_raw</th>\n",
+              "      <th>search_type</th>\n",
+              "      <th>contraband_found</th>\n",
+              "      <th>stop_outcome</th>\n",
+              "      <th>is_arrested</th>\n",
+              "      <th>stop_duration</th>\n",
+              "      <th>out_of_state</th>\n",
+              "      <th>drugs_related_stop</th>\n",
+              "      <th>district</th>\n",
+              "      <th>frisk</th>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>stop_datetime</th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "      <th></th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>2005-02-09 03:05:00</th>\n",
+              "      <td>RI-2005-00011</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,976.00</td>\n",
+              "      <td>29.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Registration Violation</td>\n",
+              "      <td>Registration/plates</td>\n",
+              "      <td>True</td>\n",
+              "      <td>Probable Cause,Terry Frisk</td>\n",
+              "      <td>Probable Cause,Protective Frisk</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>True</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-08-28 01:00:00</th>\n",
+              "      <td>RI-2005-00084</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X1</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>0</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,979.00</td>\n",
+              "      <td>26.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Other Traffic Violation</td>\n",
+              "      <td>Moving violation</td>\n",
+              "      <td>True</td>\n",
+              "      <td>Incident to Arrest,Terry Frisk</td>\n",
+              "      <td>Incident to Arrest,Protective Frisk</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Arrest Driver</td>\n",
+              "      <td>True</td>\n",
+              "      <td>16-30 Min</td>\n",
+              "      <td>True</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X1</td>\n",
+              "      <td>True</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-10-01 16:20:00</th>\n",
+              "      <td>RI-2005-00253</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone K1</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>600</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,958.00</td>\n",
+              "      <td>47.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>True</td>\n",
+              "      <td>Reasonable Suspicion,Terry Frisk</td>\n",
+              "      <td>Protective Frisk,Reasonable Suspicion</td>\n",
+              "      <td>True</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>16-30 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone K1</td>\n",
+              "      <td>True</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-10-06 21:35:00</th>\n",
+              "      <td>RI-2005-01027</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>500</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,966.00</td>\n",
+              "      <td>39.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>Speeding</td>\n",
+              "      <td>True</td>\n",
+              "      <td>Terry Frisk</td>\n",
+              "      <td>Protective Frisk</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Citation</td>\n",
+              "      <td>False</td>\n",
+              "      <td>0-15 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>True</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2005-10-07 11:33:00</th>\n",
+              "      <td>RI-2005-01121</td>\n",
+              "      <td>RI</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>nan</td>\n",
+              "      <td>900</td>\n",
+              "      <td>M</td>\n",
+              "      <td>1,980.00</td>\n",
+              "      <td>25.00</td>\n",
+              "      <td>W</td>\n",
+              "      <td>White</td>\n",
+              "      <td>Equipment/Inspection Violation</td>\n",
+              "      <td>Equipment</td>\n",
+              "      <td>True</td>\n",
+              "      <td>Terry Frisk</td>\n",
+              "      <td>Protective Frisk</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Arrest Driver</td>\n",
+              "      <td>True</td>\n",
+              "      <td>16-30 Min</td>\n",
+              "      <td>False</td>\n",
+              "      <td>False</td>\n",
+              "      <td>Zone X4</td>\n",
+              "      <td>True</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "                                id state  ... district  frisk\n",
+              "stop_datetime                             ...                \n",
+              "2005-02-09 03:05:00  RI-2005-00011    RI  ...  Zone X4   True\n",
+              "2005-08-28 01:00:00  RI-2005-00084    RI  ...  Zone X1   True\n",
+              "2005-10-01 16:20:00  RI-2005-00253    RI  ...  Zone K1   True\n",
+              "2005-10-06 21:35:00  RI-2005-01027    RI  ...  Zone X4   True\n",
+              "2005-10-07 11:33:00  RI-2005-01121    RI  ...  Zone X4   True\n",
+              "\n",
+              "[5 rows x 25 columns]"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 50
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "plkKjoU9RzSl"
+      },
+      "source": [
+        "searched = ri[\"search_conducted\"]"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "RslcSbSNSsah"
+      },
+      "source": [
+        ""
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "HBer8fVaRzOu",
+        "outputId": "6366a18b-74cd-4887-b3f3-1b9a8b9643d9"
+      },
+      "source": [
+        "searched"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "stop_datetime\n",
+              "2005-01-02 01:55:00    False\n",
+              "2005-01-02 20:30:00    False\n",
+              "2005-01-04 11:30:00    False\n",
+              "2005-01-04 12:55:00    False\n",
+              "2005-01-06 01:30:00    False\n",
+              "                       ...  \n",
+              "NaT                      NaN\n",
+              "NaT                      NaN\n",
+              "NaT                      NaN\n",
+              "NaT                      NaN\n",
+              "NaT                      NaN\n",
+              "Name: search_conducted, Length: 509681, dtype: object"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 62
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 282
+        },
+        "id": "1SwXSfT9RzKg",
+        "outputId": "3729f12d-4763-4a8d-ba42-5abdb52d72ec"
+      },
+      "source": [
+        "searched.frisk.mean()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "AttributeError",
+          "evalue": "ignored",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mAttributeError\u001b[0m                            Traceback (most recent call last)",
+            "\u001b[0;32m<ipython-input-64-219aed50a635>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0msearched\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mfrisk\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mmean\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+            "\u001b[0;32m/usr/local/lib/python3.7/dist-packages/pandas/core/generic.py\u001b[0m in \u001b[0;36m__getattr__\u001b[0;34m(self, name)\u001b[0m\n\u001b[1;32m   5139\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_info_axis\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_can_hold_identifiers_and_holds_name\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mname\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   5140\u001b[0m                 \u001b[0;32mreturn\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mname\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 5141\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0mobject\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m__getattribute__\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mname\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   5142\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   5143\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0m__setattr__\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mname\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0mstr\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mvalue\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;34m->\u001b[0m \u001b[0;32mNone\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mAttributeError\u001b[0m: 'Series' object has no attribute 'frisk'"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "25XMzxmbR9ve"
+      },
+      "source": [
+        "searched.groupby(\"driver_gender\").frisk.mean()"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "0wcUa3C8MUWe"
+      },
+      "source": [
+        "ri.is_arrested.mean()"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "toSv_4yhMUcH"
+      },
+      "source": [
+        "ri.index"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "bNWBwSggMUhO"
+      },
+      "source": [
+        "ri.index.hour"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "9zkUT3yAMUlM"
+      },
+      "source": [
+        "# ri.groupby(ri.index.hour).is_arrested.mean()"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "xrMbaZ59MUpE"
+      },
+      "source": [
+        ""
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "qqmDla2sMUvU"
+      },
+      "source": [
+        ""
+      ],
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
